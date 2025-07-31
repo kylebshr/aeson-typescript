@@ -307,10 +307,15 @@ handleConstructor (ExtraTypeScriptOptions {..}) options (DatatypeInfo {..}) gene
     -- * Type declaration to use
     interfaceName = "I" <> (lastNameComponent' $ constructorName ci)
 
-    tupleEncoding =
+    tupleEncoding = do
+      let typ = contentsTupleTypeSubstituted genericVariables ci
+      stringExp <- lift $ case typ of
+        (AppT (ConT name) t) | name == ''Maybe -> [|$(getTypeAsStringExp t) <> " | null"|]
+        _ -> getTypeAsStringExp typ
+
       lift [|TSTypeAlternatives $(TH.stringE interfaceName)
                                 $(genericVariablesListExpr True genericVariables)
-                                [getTypeScriptType (Proxy :: Proxy $(return (contentsTupleTypeSubstituted genericVariables ci)))]
+                                [$(return stringExp)]
                                 $(tryGetDoc haddockModifier (constructorName ci))|]
 
     assembleInterfaceDeclaration members = [|TSInterfaceDeclaration $(TH.stringE interfaceName)
