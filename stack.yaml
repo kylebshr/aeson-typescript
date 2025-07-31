@@ -1,8 +1,10 @@
 
-resolver: lts-23.7
+resolver: nightly-2025-07-31
 
 nix:
-  pure: false
+  enable: false
+
+system-ghc: true
 
 packages:
 - .
