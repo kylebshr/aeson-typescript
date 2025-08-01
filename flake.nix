@@ -11,7 +11,7 @@
   inputs.nixpkgsMaster.url = "github:NixOS/nixpkgs/master";
 
   outputs = { self, flake-utils, gitignore, haskellNix, nixpkgs, nixpkgsMaster }:
-    flake-utils.lib.eachSystem [ "x86_64-linux" ] (system:
+    flake-utils.lib.eachDefaultSystem (system:
       let
         # compiler-nix-name = "ghc966";
         compiler-nix-name = "ghc984";
