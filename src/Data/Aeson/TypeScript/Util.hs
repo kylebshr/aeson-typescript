@@ -12,6 +12,7 @@ import Data.Aeson.TypeScript.Instances ()
 import Data.Aeson.TypeScript.Types
 import qualified Data.List as L
 import Data.Proxy
+import Data.String (IsString)
 import Data.String.Interpolate
 import qualified Data.Text as T
 import Language.Haskell.TH hiding (stringE)
@@ -82,12 +83,12 @@ getTypeAsStringExp typ = [|getTypeScriptType (Proxy :: Proxy $(return typ))|]
 getOptionalAsBoolExp :: Type -> Q Exp
 getOptionalAsBoolExp typ = [|getTypeScriptOptional (Proxy :: Proxy $(return typ))|]
 
--- | Helper to apply a type constructor to a list of type args
+-- | Apply a type constructor to a list of type args
 applyToArgsT :: Type -> [Type] -> Type
 applyToArgsT constructor [] = constructor
 applyToArgsT constructor (x:xs) = applyToArgsT (AppT constructor x) xs
 
--- | Helper to apply a function a list of args
+-- | Apply a function to a list of args
 applyToArgsE :: Exp -> [Exp] -> Exp
 applyToArgsE f [] = f
 applyToArgsE f (x:xs) = applyToArgsE (AppE f x) xs
@@ -183,6 +184,7 @@ mapType g (ImplicitParamT x typ) = ImplicitParamT x (mapType g typ)
 #endif
 mapType _ x = x
 
+tryPromote :: (Eq a1, Eq a2, IsString a2) => Type -> [(a1, (a3, a2))] -> a1 -> Type
 tryPromote _ genericVariables (flip L.lookup genericVariables -> Just (_, "")) = ConT ''T
 tryPromote _ genericVariables (flip L.lookup genericVariables -> Just (_, "T")) = ConT ''T
 tryPromote _ genericVariables (flip L.lookup genericVariables -> Just (_, "T1")) = ConT ''T1
