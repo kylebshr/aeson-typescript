@@ -94,7 +94,7 @@ data TSDeclaration = TSInterfaceDeclaration { interfaceName :: String
                                             , interfaceDoc :: Maybe String }
                    | TSTypeAlternatives { typeName :: String
                                         , typeGenericVariables :: [String]
-                                        , alternativeTypes :: [String]
+                                        , alternativeTypes :: [(String, Maybe String)]
                                         , typeDoc :: Maybe String }
                    | TSRawDeclaration { text :: String }
   deriving (Show, Eq, Ord)

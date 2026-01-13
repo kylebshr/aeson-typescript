@@ -22,8 +22,8 @@ tests = describe "Basic tests" $ do
   describe "tagSingleConstructors and constructorTagModifier" $ do
     it [i|Works with a normal unit|] $ do
       (getTypeScriptDeclarations (Proxy :: Proxy Unit1)) `shouldBe` ([
-        TSTypeAlternatives "Unit1" [] ["IUnit1"] Nothing
-        , TSTypeAlternatives "IUnit1" [] ["void[]"] Nothing
+        TSTypeAlternatives "Unit1" [] [("IUnit1", Nothing)] Nothing
+        , TSTypeAlternatives "IUnit1" [] [("void[]", Nothing)] Nothing
         ])
 
 main :: IO ()

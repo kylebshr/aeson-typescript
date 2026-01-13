@@ -15,7 +15,7 @@ allTests = describe "NoOmitNothingFields" $ do
   it "encodes as expected" $ do
     let decls = getTypeScriptDeclarations (Proxy :: Proxy OptionalRecord)
 
-    decls `shouldBe` [TSTypeAlternatives "OptionalRecord" [] ["IOptionalRecord"] Nothing
+    decls `shouldBe` [TSTypeAlternatives "OptionalRecord" [] [("IOptionalRecord", Nothing)] Nothing
                      , TSInterfaceDeclaration "IOptionalRecord" [] [TSField False "optionalInt" "number | null" Nothing] Nothing]
 
   tests

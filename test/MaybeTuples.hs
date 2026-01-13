@@ -39,38 +39,38 @@ tests = describe "Maybes in tuple encodings" $ do
   describe "tagSingleConstructors and constructorTagModifier" $ do
     it [i|Maybe 1 tuple encoding includes null option|] $ do
       (getTypeScriptDeclarations (Proxy :: Proxy Maybe1)) `shouldBe` ([
-        TSTypeAlternatives "Maybe1" [] ["IMaybe1"] Nothing
-        , TSTypeAlternatives "IMaybe1" [] ["number | null"] Nothing
+        TSTypeAlternatives "Maybe1" [] [("IMaybe1", Nothing)] Nothing
+        , TSTypeAlternatives "IMaybe1" [] [("number | null", Nothing)] Nothing
         ])
 
     it [i|Maybe 2 tuple encoding includes null option|] $ do
       (getTypeScriptDeclarations (Proxy :: Proxy Maybe2)) `shouldBe` ([
-        TSTypeAlternatives "Maybe2" [] ["IMaybe2"] Nothing
-        , TSTypeAlternatives "IMaybe2" [] ["[string, number | null]"] Nothing
+        TSTypeAlternatives "Maybe2" [] [("IMaybe2", Nothing)] Nothing
+        , TSTypeAlternatives "IMaybe2" [] [("[string, number | null]", Nothing)] Nothing
         ])
 
     it [i|Maybe 3 tuple encoding includes null option|] $ do
       (getTypeScriptDeclarations (Proxy :: Proxy Maybe3)) `shouldBe` ([
-        TSTypeAlternatives "Maybe3" [] ["IMaybe3"] Nothing
-        , TSTypeAlternatives "IMaybe3" [] ["[string, [string, string], number | null]"] Nothing
+        TSTypeAlternatives "Maybe3" [] [("IMaybe3", Nothing)] Nothing
+        , TSTypeAlternatives "IMaybe3" [] [("[string, [string, string], number | null]", Nothing)] Nothing
         ])
 
     it [i|Maybe 4 tuple encoding includes null option|] $ do
       (getTypeScriptDeclarations (Proxy :: Proxy Maybe4)) `shouldBe` ([
-        TSTypeAlternatives "Maybe4" [] ["IMaybe4"] Nothing
-        , TSTypeAlternatives "IMaybe4" [] ["[number, number, number, number | null]"] Nothing
+        TSTypeAlternatives "Maybe4" [] [("IMaybe4", Nothing)] Nothing
+        , TSTypeAlternatives "IMaybe4" [] [("[number, number, number, number | null]", Nothing)] Nothing
         ])
 
     it [i|Maybe 5 tuple encoding includes null option|] $ do
       (getTypeScriptDeclarations (Proxy :: Proxy Maybe5)) `shouldBe` ([
-        TSTypeAlternatives "Maybe5" [] ["IMaybe5"] Nothing
-        , TSTypeAlternatives "IMaybe5" [] ["[number, number, number, number, number | null]"] Nothing
+        TSTypeAlternatives "Maybe5" [] [("IMaybe5", Nothing)] Nothing
+        , TSTypeAlternatives "IMaybe5" [] [("[number, number, number, number, number | null]", Nothing)] Nothing
         ])
 
     it [i|Maybe 6 tuple encoding includes null option|] $ do
       (getTypeScriptDeclarations (Proxy :: Proxy Maybe6)) `shouldBe` ([
-        TSTypeAlternatives "Maybe6" [] ["IMaybe6"] Nothing
-        , TSTypeAlternatives "IMaybe6" [] ["[number, number, number, number, number, number | null]"] Nothing
+        TSTypeAlternatives "Maybe6" [] [("IMaybe6", Nothing)] Nothing
+        , TSTypeAlternatives "IMaybe6" [] [("[number, number, number, number, number, number | null]", Nothing)] Nothing
         ])
 
 

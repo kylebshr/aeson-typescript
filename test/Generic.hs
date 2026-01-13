@@ -31,30 +31,30 @@ tests = describe "Generic instances" $ do
     (getTypeScriptDeclarationsRecursively (Proxy :: Proxy (Complex String))) `shouldBe` [
       TSInterfaceDeclaration "IProduct" ["T"] [TSField False "tag" "\"Product\"" Nothing, TSField False "contents" "[number, T]" Nothing] Nothing
       ,TSInterfaceDeclaration "IUnary" ["T"] [TSField False "tag" "\"Unary\"" Nothing, TSField False "contents" "number" Nothing] Nothing
-      ,TSTypeAlternatives "Complex" ["T"] ["IProduct<T>","IUnary<T>"] Nothing
+      ,TSTypeAlternatives "Complex" ["T"] [("IProduct<T>", Nothing), ("IUnary<T>", Nothing)] Nothing
       ]
 
   it [i|Complex2 makes the declaration and types correctly|] $ do
     (getTypeScriptDeclarationsRecursively (Proxy :: Proxy (Complex2 String))) `shouldBe` [
-      TSTypeAlternatives "Complex2" ["T"] ["IProduct2<T>"] Nothing
-      ,TSTypeAlternatives "IProduct2" ["T"] ["[number, T]"] Nothing
+      TSTypeAlternatives "Complex2" ["T"] [("IProduct2<T>", Nothing)] Nothing
+      ,TSTypeAlternatives "IProduct2" ["T"] [("[number, T]", Nothing)] Nothing
       ]
 
   it [i|Complex3 makes the declaration and types correctly|] $ do
     (getTypeScriptDeclarationsRecursively (Proxy :: Proxy (Complex3 String))) `shouldBe` [
       TSInterfaceDeclaration "IProduct3" ["T"] [TSField False "record3" "T[]" Nothing] Nothing
-      ,TSTypeAlternatives "Complex3" ["T"] ["IProduct3<T>"] Nothing
+      ,TSTypeAlternatives "Complex3" ["T"] [("IProduct3<T>", Nothing)] Nothing
       ]
 
     (getTypeScriptDeclarationsRecursively (Proxy :: Proxy (Complex3 Int))) `shouldBe` [
       TSInterfaceDeclaration "IProduct3" ["T"] [TSField False "record3" "T[]" Nothing] Nothing
-      ,TSTypeAlternatives "Complex3" ["T"] ["IProduct3<T>"] Nothing
+      ,TSTypeAlternatives "Complex3" ["T"] [("IProduct3<T>", Nothing)] Nothing
       ]
 
   it [i|Complex4 makes the declaration and types correctly|] $ do
     (getTypeScriptDeclarationsRecursively (Proxy :: Proxy (Complex4 String))) `shouldBe` [
       TSInterfaceDeclaration "IProduct4" ["T"] [TSField False "record4" "{[k in string]: T}" Nothing] Nothing
-      ,TSTypeAlternatives "Complex4" ["T"] ["IProduct4<T>"] Nothing
+      ,TSTypeAlternatives "Complex4" ["T"] [("IProduct4<T>", Nothing)] Nothing
       ]
 
 main :: IO ()

@@ -22,27 +22,29 @@ formatTSDeclarations = formatTSDeclarations' defaultFormattingOptions
 
 -- | Format a single TypeScript declaration. This version accepts a FormattingOptions object in case you want more control over the output.
 formatTSDeclaration :: FormattingOptions -> TSDeclaration -> String
-formatTSDeclaration (FormattingOptions {..}) (TSTypeAlternatives name genericVariables names maybeDoc) =
+formatTSDeclaration (FormattingOptions {..}) (TSTypeAlternatives name genericVariables (filter (not . isNoEmitTypeScriptAlternative) -> names) maybeDoc) =
   makeDocPrefix maybeDoc <> mainDeclaration
   where
+    typeStrings = fmap fst names
+
     mainDeclaration = case chooseTypeAlternativesFormat typeAlternativesFormat of
       Enum -> [i|#{exportPrefix exportMode}enum #{typeNameModifier name} { #{alternativesEnum} }|]
         where
-          alternativesEnum = T.intercalate ", " $ [toEnumName entry <> "=" <> entry | entry <- T.pack <$> names]
+          alternativesEnum = T.intercalate ", " $ [toEnumName entry <> "=" <> entry | entry <- T.pack <$> typeStrings]
       EnumWithType -> [i|#{exportPrefix exportMode}enum #{typeNameModifier name}Enum { #{alternativesEnumWithType} }#{enumType}|]
         where
-          alternativesEnumWithType = T.intercalate ", " $ [toEnumName entry <> "=" <> entry | entry <- T.pack <$> names]
+          alternativesEnumWithType = T.intercalate ", " $ [toEnumName entry <> "=" <> entry | entry <- T.pack <$> typeStrings]
           enumType = [i|\n\ntype #{name} = keyof typeof #{typeNameModifier name}Enum;|] :: T.Text
       TypeAlias -> [i|#{exportPrefix exportMode}type #{typeNameModifier name}#{getGenericBrackets genericVariables} = #{alternatives};|]
         where
-          alternatives = T.intercalate " | " (fmap T.pack names)
+          alternatives = T.intercalate " | " (fmap T.pack typeStrings)
 
     -- Only allow certain formats if some checks pass
     chooseTypeAlternativesFormat Enum
-      | all isDoubleQuotedString names = Enum
+      | all isDoubleQuotedString typeStrings = Enum
       | otherwise = TypeAlias
     chooseTypeAlternativesFormat EnumWithType
-      | all isDoubleQuotedString names = EnumWithType
+      | all isDoubleQuotedString typeStrings = EnumWithType
       | otherwise = TypeAlias
     chooseTypeAlternativesFormat x = x
 
@@ -87,7 +89,7 @@ formatTSDeclarations' options allDeclarations =
         getDeclarationName _ = Nothing
 
     removeReferencesToRemovedNames :: [String] -> TSDeclaration -> TSDeclaration
-    removeReferencesToRemovedNames removedNames decl@(TSTypeAlternatives {..}) = decl { alternativeTypes = [x | x <- alternativeTypes, not (x `L.elem` removedNames)] }
+    removeReferencesToRemovedNames removedNames decl@(TSTypeAlternatives {..}) = decl { alternativeTypes = [x | x <- alternativeTypes, not (fst x `L.elem` removedNames)] }
     removeReferencesToRemovedNames _ x = x
 
     declarations = allDeclarations
@@ -119,3 +121,7 @@ isNoEmitTypeScriptDeclaration :: TSDeclaration -> Bool
 isNoEmitTypeScriptDeclaration (TSInterfaceDeclaration {interfaceDoc=(Just doc)}) = noEmitTypeScriptAnnotation `L.isInfixOf` doc
 isNoEmitTypeScriptDeclaration (TSTypeAlternatives {typeDoc=(Just doc)}) = noEmitTypeScriptAnnotation `L.isInfixOf` doc
 isNoEmitTypeScriptDeclaration _ = False
+
+isNoEmitTypeScriptAlternative :: (String, Maybe String) -> Bool
+isNoEmitTypeScriptAlternative (_, Just doc) = noEmitTypeScriptAnnotation `L.isInfixOf` doc
+isNoEmitTypeScriptAlternative _ = False
